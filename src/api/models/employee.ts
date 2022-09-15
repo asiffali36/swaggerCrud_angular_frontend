@@ -1,7 +1,8 @@
+/* tslint:disable */
 export interface Employee {
 
   /**
-   * Employee First Nam
+   * Employee First Name
    */
   firstName?: string;
   id?: number;

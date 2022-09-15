@@ -13,6 +13,7 @@ import { Employee } from '../models/employee';
 })
 class GetEmployeeService extends __BaseService {
   static readonly getEmployeeRecordPath = '/employee-details';
+  static readonly getEmployeeRecordByIdPath = '/employee-details-byid';
 
   constructor(
     config: __Configuration,
@@ -24,7 +25,7 @@ class GetEmployeeService extends __BaseService {
   /**
    * employee detail
    *
-   * Returns a single Employee
+   * Returns All Employee
    * @return successful operation
    */
   getEmployeeRecordResponse(): __Observable<__StrictHttpResponse<Array<Employee>>> {
@@ -51,12 +52,50 @@ class GetEmployeeService extends __BaseService {
   /**
    * employee detail
    *
-   * Returns a single Employee
+   * Returns All Employee
    * @return successful operation
    */
   getEmployeeRecord(): __Observable<Array<Employee>> {
     return this.getEmployeeRecordResponse().pipe(
       __map(_r => _r.body as Array<Employee>)
+    );
+  }
+
+  /**
+   * getById
+   * @param id id
+   * @return OK
+   */
+  getEmployeeRecordByIdResponse(id: number): __Observable<__StrictHttpResponse<Employee>> {
+    let __params = this.newParams();
+    let __headers = new HttpHeaders();
+    let __body: any = null;
+    if (id != null) __params = __params.set('id', id.toString());
+    let req = new HttpRequest<any>(
+      'GET',
+      this.rootUrl + `/employee-details-byid`,
+      __body,
+      {
+        headers: __headers,
+        params: __params,
+        responseType: 'json'
+      });
+
+    return this.http.request<any>(req).pipe(
+      __filter(_r => _r instanceof HttpResponse),
+      __map((_r) => {
+        return _r as __StrictHttpResponse<Employee>;
+      })
+    );
+  }
+  /**
+   * getById
+   * @param id id
+   * @return OK
+   */
+  getEmployeeRecordById(id: number): __Observable<Employee> {
+    return this.getEmployeeRecordByIdResponse(id).pipe(
+      __map(_r => _r.body as Employee)
     );
   }
 }
